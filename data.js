@@ -15,7 +15,7 @@ var getGrades = function(penguin, gradeType)
   var day = []
   gradeType.forEach(function(d,i) {return day.push(d.day); });
 
-  console.log("day", day)
+  //console.log("day", day)
 
   var gradeDay = []
 
@@ -37,30 +37,52 @@ The final is worth 30% of the grade*/
 
 var getCummulative = function(penguin)
 {
-  var quizPerc = 0.15;
-  var hwPerc = 0.15;
-  var testPerc = 0.40;
-  var finalPerc = 0.30;
-
   var quizGrades = getGrades(penguin, penguin.quizes);
   var hwGrades = getGrades(penguin, penguin.homework);
   var testGrades = getGrades(penguin, penguin.test);
   var finalGrades = getGrades(penguin, penguin.final);
 
-  var averages = getAverages(quizGrades)
-  console.log("avg", averages)
+  var avgQuiz = getAverages(quizGrades)
+  var avgHW = getAverages(hwGrades)
+  var avgTest = getAverages(testGrades)
+  var avgFinal = getAverages(finalGrades)
+ console.log("testAvg", avgTest)
+  var totals = calcTotals(avgQuiz, avgHW, avgTest, avgFinal)
 
+  console.log("totals", totals)
+
+}
+
+var calcTotals = function(avgQuiz, avgHW, avgTest, avgFinal)
+{
+  var quizPerc = 0.15;
+  var hwPerc = 0.15;
+  var testPerc = 0.40;
+  var finalPerc = 0.30;
+
+  var total = []
+
+  for (var i = 0; i < 41; i++)
+  {
+    var percentQuiz = avgQuiz[i]*quizPerc;
+    var percentHW = avgHW[i]*hwPerc;
+    var percentTest = avgTest[i]*testPerc;
+    var percentFinal = avgFinal[i]*finalPerc;
+    //console.log(avgTest[i])
+    //console.log("check", percentTest)
+
+    total.push(percentQuiz + percentHW + percentTest + percentFinal)
+  }
+  return total;
 }
 
 var getAverages = function(grades)
 {
   var avg = []
-  var totalDays = 0
+  var totalGrades = 1
   var gradeTotal = 0
   var currDay = 1
   var lastGradeDay = 0
-
-  //var lastGradeDay = 0
 
  //console.log("grades", grades[0][1])
  //console.log("grades in avg", grades)
@@ -68,20 +90,23 @@ var getAverages = function(grades)
   for(var i = 0; i < 41; i++)
   {
      //console.log("check", grades[lastGradeDay][1])
-     
+
      // make sure we don't run out of data in array
      if (lastGradeDay >= grades.length)
      {
        avg.push(avg[i-1]);
-       i = i+1;
+       lastGradeDay = lastGradeDay+1;
      }
-      else if (grades[lastGradeDay][1]== currDay)
+      else if (grades[lastGradeDay][1] == currDay)
       {
-        totalDays += 1;
-        gradeTotal += grades[lastGradeDay][0];
-        avg.push(gradeTotal/totalDays);
-        lastGradeDay += 1;
+        //console.log("totalDays", totalDays)
 
+        gradeTotal += grades[lastGradeDay][0];
+        //console.log("gradeTotal", gradeTotal)
+        avg.push(gradeTotal/totalGrades);
+        console.log("thing being pushed", gradeTotal/totalGrades)
+        lastGradeDay += 1;
+        totalGrades += 1;
 
       }
       else
@@ -91,10 +116,12 @@ var getAverages = function(grades)
 
         {
           avg.push(avg[i-1]);
+          //console.log("position before", avg[i-1])
         }
         else
         {
-          avg.push(0);
+          avg.push(-1);
+          //console.log("pushing zero")
         }
 
       }
@@ -104,7 +131,7 @@ var getAverages = function(grades)
 
     }
 
-
+console.log("avg",avg)
   return avg;
 
 }
@@ -118,12 +145,12 @@ classDataP.then(function(data)
   var index = 0;
 
   var penguin = getPenguin(data,index);
-  console.log("penguin", penguin)
+  //console.log("penguin", penguin)
 
   var gradeType = penguin.quizes;
   var grades = getGrades(penguin, gradeType);
 
-  console.log("grades", grades)
+  //console.log("grades", grades)
 
   getCummulative(penguin);
 
