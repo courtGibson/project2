@@ -10,7 +10,7 @@ var getGrades = function(penguin, gradeType)
 {
   var grades = []
   var max = gradeType[0].max;
-  gradeType.forEach(function(d,i) {return grades.push(((d.grade)/max)*100); });
+  gradeType.forEach(function(d,i) {return grades.push(((d.grade)/max)); });
 
   var day = []
   gradeType.forEach(function(d,i) {return day.push(d.day); });
@@ -42,14 +42,16 @@ var getCummulative = function(penguin)
   var testGrades = getGrades(penguin, penguin.test);
   var finalGrades = getGrades(penguin, penguin.final);
 
+  //var pointsPoss = quizGrades.length*penguin.quizes[0].max;
+
   var avgQuiz = getAverages(quizGrades)
   var avgHW = getAverages(hwGrades)
   var avgTest = getAverages(testGrades)
   var avgFinal = getAverages(finalGrades)
- console.log("testAvg", avgTest)
+// console.log("testAvg", avgTest)
   var totals = calcTotals(avgQuiz, avgHW, avgTest, avgFinal)
 
-  console.log("totals", totals)
+//  console.log("totals", totals)
 
 }
 
@@ -62,16 +64,48 @@ var calcTotals = function(avgQuiz, avgHW, avgTest, avgFinal)
 
   var total = []
 
+
   for (var i = 0; i < 41; i++)
   {
-    var percentQuiz = avgQuiz[i]*quizPerc;
-    var percentHW = avgHW[i]*hwPerc;
-    var percentTest = avgTest[i]*testPerc;
-    var percentFinal = avgFinal[i]*finalPerc;
-    //console.log(avgTest[i])
-    //console.log("check", percentTest)
+    var dayTotal = 0;
+    var pointsPoss = 0;
 
-    total.push(percentQuiz + percentHW + percentTest + percentFinal)
+    if (avgQuiz[i]!=-1)
+    {
+      // add the weight to weight
+      var percentQuiz = avgQuiz[i]*quizPerc;
+      dayTotal += percentQuiz;
+      pointsPoss += quizPerc;
+    }
+    if (avgHW[i]!=-1)
+    {
+      //if not zero
+      var percentHW = avgHW[i]*hwPerc;
+      dayTotal += percentHW;
+      pointsPoss += hwPerc;
+    }
+    if (avgTest[i]!=-1)
+    {
+      //if not zero
+      var percentTest = avgTest[i]*testPerc;
+      dayTotal += percentTest;
+      pointsPoss += testPerc;
+    }
+    if (avgFinal[i]!=-1)
+    {
+      //if not zero
+      var percentFinal = avgFinal[i]*finalPerc;
+      dayTotal += percentFinal;
+      pointsPoss += finalPerc;
+    }
+
+    total.push(dayTotal/pointsPoss*100);
+
+
+    //console.log(avgTest[i])
+//  console.log("checkTotal", dayTotal/pointsPoss)
+
+    //total.push(totalGrade*totalWeight)//percentQuiz + percentHW + percentTest + percentFinal)
   }
   return total;
 }
