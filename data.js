@@ -52,6 +52,7 @@ var getCummulative = function(penguin)
   var totals = calcTotals(avgQuiz, avgHW, avgTest, avgFinal)
 
 //  console.log("totals", totals)
+  return totals;
 
 }
 
@@ -138,7 +139,7 @@ var getAverages = function(grades)
         gradeTotal += grades[lastGradeDay][0];
         //console.log("gradeTotal", gradeTotal)
         avg.push(gradeTotal/totalGrades);
-        console.log("thing being pushed", gradeTotal/totalGrades)
+        //console.log("thing being pushed", gradeTotal/totalGrades)
         lastGradeDay += 1;
         totalGrades += 1;
 
@@ -165,12 +166,41 @@ var getAverages = function(grades)
 
     }
 
-console.log("avg",avg)
+//console.log("avg",avg)
   return avg;
 
 }
 
+var getClassAvg = function(data)
+{
+  var penguinList = []
+  data.forEach(function(d, i) {return penguinList.push(getPenguin(data, i));})
+  //console.log(penguinList)
 
+  var allCummulative = []
+//  var allCummDay = []
+
+  for (var i = 0; i < penguinList.length; i++)
+  {
+    var total = getCummulative(penguinList[i])
+    allCummulative.push(total);
+  }
+
+
+ var classAvg = []
+  for (var i = 0; i < total.length; i++)
+  {
+    var avg = 0;
+    for (var  index = 0;  index < penguinList.length; i++)
+    {
+      avg += allCummulative[index][i]
+    }
+    classAvg.push(avg/penguinList.length)
+  }
+
+  return classAvg;
+
+}
 
 
 classDataP.then(function(data)
@@ -187,6 +217,9 @@ classDataP.then(function(data)
   //console.log("grades", grades)
 
   getCummulative(penguin);
+
+  getClassAvg(data);
+  console.log("classAvg",classAvg)
 
 
 },
