@@ -171,30 +171,37 @@ var getAverages = function(grades)
 
 }
 
-var getClassAvg = function(data)
+var getPenguins = function(data)
 {
   var penguinList = []
   data.forEach(function(d, i) {return penguinList.push(getPenguin(data, i));})
-  console.log(penguinList)
+
+  return penguinList;
+}
+
+var getClassAvg = function(data)
+{
+  var penguinList = getPenguins(data);
+  //console.log(penguinList)
 
   var allCummulative = []
-//  var allCummDay = []
- var total = []
+  //  var allCummDay = []
+  var total = []
   for (var i = 0; i < penguinList.length; i++)
   {
     total = getCummulative(penguinList[i])
     allCummulative.push(total);
   }
 
-console.log("Made it to spot 1")
- var classAvg = []
+   //console.log("Made it to spot 1")
+  var classAvg = []
   for (var i = 0; i < 41; i++)
   {
-    console.log("Made it to spot 2")
+    //console.log("Made it to spot 2")
     var avg = 0;
     for (var  index = 0;  index < penguinList.length; index++)
     {
-      console.log("Made it to spot 3")
+      //console.log("Made it to spot 3")
       avg += allCummulative[index][i]
     }
     classAvg.push(avg/penguinList.length)
@@ -211,20 +218,21 @@ classDataP.then(function(data)
   var index = 0;
 
   var penguin = getPenguin(data,index);
-  console.log("penguin", penguin)
+  //console.log("penguin", penguin)
 
   var gradeType = penguin.quizes;
   var grades = getGrades(penguin, gradeType);
 
-  console.log("grades", grades)
+  //console.log("grades", grades)
 
   getCummulative(penguin);
-console.log("Made it to spot 1")
+//console.log("Made it to spot 1")
   var classAvg = getClassAvg(data);
-  console.log("classAvg",classAvg)
+  //console.log("classAvg",classAvg)
 
+}
 
-},
+,
   function(err)
 {
   console.log(err);
