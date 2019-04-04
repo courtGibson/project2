@@ -23,6 +23,11 @@
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
+  }
+
+    body {
+      background-color: lightblue;
+    }
 
     </style>
     <meta charset="utf-8">
@@ -35,8 +40,13 @@
     <script type="text/javascript" src="data.js"></script>
     <script type="text/javascript" src="graphics.js"></script>
 
+<h2 style="margin-right:100px; clear:right; float:right">Choose a Student (class rank order)</h2>
+<h2 style="margin-left:300px;">Cummulative Grades</h2>
+
     <svg id="graph1" style="display:block; float:left; clear:left"></svg>
+    <h2 style="margin-left:300px; clear:left; float:left">Student Data</h2>
     <svg id="graph2" style="display:block; float:left; clear:left"></svg>
+    <h2 style="margin-left:300px; clear:left; float:left">Student Difference from Class Average</h2>
     <svg id="graph3" style="display:block; float:left; clear:left"></svg>
 <div style="float:left; clear:right;">
     <button id="cummulative" style="display:block; margin-top:-200px;  margin-left:100px">Cummulative</button>
@@ -45,5 +55,6 @@
     <button id="final" style="display:inline; margin-top:-200px; ">Final</button>
     <button id="homework" style="display:inline; margin-top:-200px; ">Homework</button>
 </div>
+
   </body>
 </html>
