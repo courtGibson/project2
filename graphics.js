@@ -120,6 +120,7 @@ var drawChart = function(data, svg, svg2, margins, yScale, xScale, colors)
    svg.append("g")
     .attr("class","line")
     .classed("hidden", false)
+    .attr("id", "classAvg")
     .append("path")
     .datum(getClassAvg(data))
     .attr("d", drawLine)
@@ -128,6 +129,139 @@ var drawChart = function(data, svg, svg2, margins, yScale, xScale, colors)
     .attr("stroke-width",2)
     //.attr("lineDashType", "dash")
 }
+
+var drawChart3 = function(data, svg, margins, yScale, xScale, colors)
+{
+
+
+
+  var drawLine = d3.line()
+          .x(function(d,i){return xScale(i)+margins.left;})
+          .y(function(d){return yScale(d);})
+
+
+  var penguinList = getPenguins(data);
+  console.log("pList", penguinList)
+  console.log(getCummulative(penguinList[0]))
+
+  var lineData = []
+  penguinList.forEach(function(d) {return lineData.push(getCummulative(d));})
+  console.log("line data", lineData)
+
+  var drawArea1 = d3.area()
+        .x(function(d,i){return xScale(i*1.82)+margins.left+2;})
+        .y0(function(d){return yScale(78);})
+        .y1(function(d){return yScale(98);})
+
+  svg.append("g")
+      .attr("class","area")
+      .classed("hidden", false)
+      .append("path")
+      .datum(data)
+      .attr("fill", "springgreen")
+      .style("opacity", 1)
+      .attr("d", drawArea1);
+
+
+    var drawArea2 = d3.area()
+          .x(function(d,i){return xScale(i*1.82)+margins.left+2;})
+          .y0(function(d){return yScale(58);})
+          .y1(function(d){return yScale(78);})
+
+   svg.append("g")
+      .attr("class","area")
+      .classed("hidden", false)
+      .append("path")
+      .datum(data)
+      .attr("fill", "khaki")
+      .style("opacity", 1)
+      .attr("d", drawArea2);
+
+
+
+  var drawArea3 = d3.area()
+        .x(function(d,i){return xScale(i*1.82)+margins.left+2;})
+        .y0(function(d){return yScale(0);})
+        .y1(function(d){return yScale(58);})
+
+    svg.append("g")
+        .attr("class","area")
+        .classed("hidden", false)
+        .append("path")
+        .datum(data)
+        .attr("fill", "salmon")
+        .style("opacity", 1 )
+        .attr("d", drawArea3);
+
+
+
+  lineData.forEach(function(d,i)
+  {
+    return svg.append("g")
+     .attr("class","line")
+     .attr("id", data[i].picture.split("-300px.png")[0]+"line")
+     .classed("hidden", false)
+     .append("path")
+     .datum(d)
+     .attr("d", drawLine)
+     .attr("fill", "none")
+     .attr("stroke",function(d,i){return "blue"})
+     .attr("stroke-width",2)
+     .style("opacity",0.8)
+     .on("mouseover", function(d){
+
+       //console.log("picture", data[i].picture)
+       var currPicture = data[i].picture.split(".png")[0]
+       var picID = "#"+currPicture;
+
+       d3.select(picID)
+          .style("transform", "scale(1.4,1.4)")
+          .style("transform-origin", "50% 50%");
+
+       d3.select(this)
+         .attr("stroke-width", 5)
+         //console.log("ID of line", )
+
+
+     })
+
+    .on("mouseout", function(d){
+
+       //console.log("picture", data[i].picture)
+       var currPicture = data[i].picture.split(".png")[0]
+       var picID = "#"+currPicture;
+
+       d3.select(picID)
+          .style("transform", "scale(1,1)")
+          .style("transform-origin", "50% 50%");
+
+       d3.select(this)
+         .attr("stroke-width", 2)
+     })
+     .on("click", function(d){
+
+       console.log("picture", data[i].picture)
+       var currPicture = data[i].picture
+       var picID = "#"+currPicture.split("-300px.png")[0];
+
+       d3.select(picID)
+          .style("transform", "scale(1.4,1.4)")
+          .style("transform-origin", "50% 50%");
+     })
+   })
+
+   svg.append("g")
+    .attr("class","line")
+    .classed("hidden", false)
+    .attr("id", "classAvg")
+    .append("path")
+    .datum(getClassAvg(data))
+    .attr("d", drawLine)
+    .attr("fill", "none")
+    .attr("stroke",function(d,i){return "red"})
+    .attr("stroke-width",2)
+    //.attr("lineDashType", "dash")
+})
 
 var getPictures = function(data)
 {
@@ -141,6 +275,7 @@ var makePenguinButtons = function(data, svg2, margins, yScale, xScale, colors)
   var pictures = getPictures(data);
   //console.log("picture", pictures)
 
+ var count = 0;
 
   d3.select("body")
      .selectAll("img")
@@ -157,7 +292,9 @@ var makePenguinButtons = function(data, svg2, margins, yScale, xScale, colors)
        console.log("pic name", currPicture)
        var lineID = "#"+currPicture+"line";
 
+
 console.log("lineID", lineID)
+
       d3.select(lineID)
         .attr("stroke-width", 5)
 
@@ -182,7 +319,30 @@ console.log("lineID", lineID)
 
      })
      .on("click", function(d,i) {
+
+       var id = "#"+d.split("-300px.png")[0]+"line";
        draw(data[i].picture, data, svg2, margins, yScale, xScale, colors);
+
+      if(count%2==0)
+      {
+        var lines = d3.selectAll(".line")
+                       .style("opacity",0)
+
+
+         d3.select(id)
+            .style("opacity",1)
+
+        d3.select("#classAvg")
+        .style("opacity",1)
+
+
+      }
+      else {
+        var lines = d3.selectAll(".line")
+                       .style("opacity",1)
+      }
+
+     count++;
      })
 }
 
@@ -514,10 +674,15 @@ classDataP.then(function(data)
           .attr("transform","translate("+(margins.left)+","
           + 5 +")");
 
+          var svg3 = d3.select("#graph3")
+          .attr("width", width)
+          .attr("height", height)
+
   var colors = d3.scaleOrdinal(d3.schemeAccent);
 
   makePenguinButtons(data, svg2,  margins, yScale, xScale, colors);
   drawChart(data, classSVG, svg2, margins, yScale, xScale, colors);
+  drawChart3(data, svg3, margins, yScale, xScale, colors)
 
 },
   function(err)
