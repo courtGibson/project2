@@ -151,7 +151,7 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors)
 
       }
 
-var drawChart3 = function(data, pengPic, svg, margins, yScale, xScale, colors, height, width, heights, widths)
+/*var drawChart3 = function(data, pengPic, svg, margins, yScale, xScale, colors, height, width, heights, widths)
 {
 
   var xScale = d3.scaleLinear()
@@ -205,6 +205,8 @@ var drawChart3 = function(data, pengPic, svg, margins, yScale, xScale, colors, h
 
  var diff = getDiff(data, currPeng)
 
+ ///// does not know what penguin is in diff function
+
 
   console.log("diff",diff)
 
@@ -237,7 +239,7 @@ var drawChart3 = function(data, pengPic, svg, margins, yScale, xScale, colors, h
      .style("opacity",0.8)
 
 
-}
+}*/
 
 var getPictures = function(data)
 {
@@ -321,7 +323,7 @@ var makePenguinButtons = function(data, svg1, svg2, svg3, margins, yScale, xScal
 
        var id = "#"+d[1].split("-300px.png")[0]+"line";
        draw(d[1], data, svg2, margins, yScale, xScale, colors);
-       drawChart3(data, d[1], svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
+       //drawChart3(data, d[1], svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
       if(count%2==0)
       {
         var lines = d3.selectAll(".line")
