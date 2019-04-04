@@ -60,9 +60,7 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors)
         .style("opacity", 1 )
         .attr("d", drawArea3);
 
-        var div = d3.select("body").append("div")
-           .attr("class", "tooltip")
-             .style("display", "none");
+
 
   lineData.forEach(function(d,i)
   {
@@ -91,16 +89,6 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors)
          .attr("stroke-width", 5)
          //console.log("ID of line", )
 
-div.style("display", "inline");
-
-
-     })
-     .on("mousemove", function(d){
-
-
-           div.text(d3.event.pageX + ", " + d3.event.pageY)
-               .style("left", (d3.event.pageX - 34) + "px")
-               .style("top", (d3.event.pageY - 12) + "px");
 
 
      })
@@ -117,10 +105,7 @@ div.style("display", "inline");
 
        d3.select(this)
          .attr("stroke-width", 2)
-//////////////////////////////////////////////////////////
 
-
-        div.style("display", "none");
 
 
      })
@@ -152,7 +137,7 @@ div.style("display", "inline");
     //.attr("lineDashType", "dash")
 }
 
-var drawChart3 = function(data, pengPic, svg, margins, yScale, xScale, colors, height, width, heights, widths)
+/*var drawChart3 = function(data, pengPic, svg, margins, yScale, xScale, colors, height, width, heights, widths)
 {
 
   var xScale = d3.scaleLinear()
@@ -238,7 +223,7 @@ var drawChart3 = function(data, pengPic, svg, margins, yScale, xScale, colors, h
      .style("opacity",0.8)
 
 
-}
+}*/
 
 var getPictures = function(data)
 {
@@ -299,8 +284,7 @@ var makePenguinButtons = function(data, svg2, svg3, margins, yScale, xScale, col
 
        var id = "#"+d.split("-300px.png")[0]+"line";
        draw(data[i].picture, data, svg2, margins, yScale, xScale, colors);
-       drawChart3(data, data[i].picture, svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
-
+       //drawChart3(data, data[i].picture, svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
       if(count%2==0)
       {
         var lines = d3.selectAll(".line")
@@ -321,10 +305,62 @@ var makePenguinButtons = function(data, svg2, svg3, margins, yScale, xScale, col
       }
 
      count++;
+
+     drawCircle2(data, data[i].picture, svg3, margins, yScale, xScale, colors,  height, width, heights, widths)
+
      })
 }
 
+var drawCircle2 = function(data, pengPic, svg, margins, yScale, xScale, colors,  height, width, heights, widths)
+{
+  var penguins = getPenguins(data);
+  var penguinFound = false;
+  var index = 0;
+  var currPeng = "";
 
+
+  while (penguinFound == false && index<penguins.length)
+  {
+    console.log(pengPic, penguins[index].picture)
+
+    if (penguins[index].picture == pengPic)
+    {
+      penguinFound = true;
+      currPeng = penguins[index];
+      console.log("currPeng1", currPeng)
+    }
+    index++;
+    if (index == penguins.length)
+    {
+      console.log("not found")
+    }
+  }
+
+  var currData = getCummulative(currPeng);
+
+
+  svg.selectAll("circle")
+       .data(currData)
+       .enter()
+       .append("circle")
+       .attr("r", 5)
+       .attr("cx", function(d, i) { return xScale(i); })
+       .attr("cy", function(d) { return yScale(d); })
+       .on("mouseover", function(d) {
+           div.transition()
+               .duration(200)
+               .style("opacity", .9);
+           div	.html(formatTime(d.date) + "<br/>"  + d.close)
+               .style("left", (d3.event.pageX) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+           })
+       .on("mouseout", function(d) {
+           div.transition()
+               .duration(500)
+               .style("opacity", 0);
+       });
+
+}
 
 var drawChart2 = function(currPeng, data, svg, currData, margins, yScale, xScale, colors)
 {
