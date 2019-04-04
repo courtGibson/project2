@@ -56,7 +56,7 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors)
         .classed("hidden", false)
         .append("path")
         .datum(data)
-        .attr("fill", "salmon")
+        .attr("fill", "coral")
         .style("opacity", 1 )
         .attr("d", drawArea3);
 
@@ -481,7 +481,7 @@ var drawChart2 = function(currPeng, data, svg, currData, margins, yScale, xScale
         .classed("hidden", false)
         .append("path")
         .datum(data)
-        .attr("fill", "salmon")
+        .attr("fill", "coral")
         .style("opacity", 1 )
         .attr("d", drawArea3);
 //console.log("currPeng", currPeng)
@@ -634,7 +634,7 @@ var drawCircle = function(currPeng, data, svg, currData, margins, yScale, xScale
           .classed("hidden", false)
           .append("path")
           .datum(data)
-          .attr("fill", "salmon")
+          .attr("fill", "coral")
           .style("opacity", 1 )
           .attr("d", drawArea3);
   //console.log("currPeng", currPeng)
