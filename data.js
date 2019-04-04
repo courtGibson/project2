@@ -9,6 +9,7 @@ var getPenguin = function(data, index)
 var getGrades = function(penguin, gradeType)
 {
   var grades = []
+  console.log("max val", gradeType[0].max)
   var max = gradeType[0].max;
   gradeType.forEach(function(d,i) {return grades.push(((d.grade)/max)); });
 
