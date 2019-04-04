@@ -6,10 +6,26 @@ var getPenguin = function(data, index)
   return data[index];
 }
 
+var getDiff = function(data, penguin)
+{
+  var avg = getClassAvg(data)
+  console.log("avg", avg)
+  var cumm = getCummulative(penguin)
+  console.log("cumm", cumm)
+  var diff = []
+
+  for (var i = 0; i<41;i++)
+  {
+    diff[i]=cumm[i]-avg[i];
+  }
+
+  return diff;
+}
+
 var getGrades = function(penguin, gradeType)
 {
   var grades = []
-  console.log("max val", gradeType[0].max)
+  //console.log("max val", gradeType[0].max)
   var max = gradeType[0].max;
   gradeType.forEach(function(d,i) {return grades.push(((d.grade)/max)); });
 
