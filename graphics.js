@@ -56,14 +56,14 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,
         .classed("hidden", false)
         .append("path")
         .datum(data)
-        .attr("fill", "coral")
+        .attr("fill", "grey")
         .style("opacity", 1 )
         .attr("d", drawArea3);
 
           // var currPicture = data[i].picture
           // var picID = "#"+currPicture.split("-300px.png")[0];
 
-
+count = 0;
   lineData.forEach(function(d,i)
   {
     return svg.append("g")
@@ -79,7 +79,7 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,
      .style("opacity",0.8)
       .attr("id",data[i].picture.split("-300px.png")[0]+"path")
      .on("mouseover", function(d){
-
+       if (count%2!=0)
        //console.log("picture", data[i].picture)
        var currPicture = data[i].picture.split("-300px.png")[0]
        var picID = "#"+currPicture;
@@ -92,6 +92,8 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,
 
        d3.select(this)
          .attr("stroke-width", 5)
+
+
          //console.log("ID of line", )
 
 
@@ -129,9 +131,41 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,
 
          var id = "#"+currPicture.split("-300px.png")[0]+"line";
          draw(currPicture, data, svg2, margins, yScale, xScale, colors, height, width, heights, widths);
-         //drawChart3(data, d[1], svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
+
+         drawChart3(data, currPicture, svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
+
+         if(count%2==0)
+         {
+           var lines = d3.selectAll(".line")
+                         .transition()
+                         .duration(1000)
+                         .ease(d3.easeLinear)
+                          .style("opacity",0)
 
 
+            d3.select(id)
+            .transition()
+            .duration(1000)
+            .ease(d3.easeLinear)
+               .style("opacity",1)
+
+           d3.select("#classAvg")
+           .transition()
+           .duration(1000)
+           .ease(d3.easeLinear)
+           .style("opacity",1)
+
+
+         }
+         else {
+           var lines = d3.selectAll(".line")
+                         .transition()
+                         .duration(1000)
+                         .ease(d3.easeLinear)
+                          .style("opacity",1)
+         }
+
+        count++;
        drawCircle2(data, currPicture, svg2, margins, yScale, xScale, colors,  height, width, heights, widths)
        drawCircle2(data, currPicture, svg, margins, yScale, xScale, colors,  height, width, heights, widths)
       //data, svg, svg2, svg3, margins, yScale, xScale, colors
@@ -161,12 +195,16 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,
 
       }
 
-/*var drawChart3 = function(data, pengPic, svg, margins, yScale, xScale, colors, height, width, heights, widths)
+var drawChart3 = function(data, pengPic, svg, margins, yScale, xScale, colors, height, width, heights, widths)
 {
+
+    d3.select("#graph3").selectAll(".line3").remove();
+
+
 
   var xScale = d3.scaleLinear()
                 .domain([0,41])
-                .range([0, 600])
+                .range([0, 800])
 
   var yScale = d3.scaleLinear()
                   .domain([-50,50])
@@ -175,6 +213,20 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,
   var xAxis  = d3.axisBottom(xScale);
 
   var yAxis  = d3.axisLeft(yScale);
+
+  var drawArea4 = d3.area()
+        .x(function(d,i){return xScale(i*1.87)+margins.left+2;})
+        .y0(function(d){return yScale(-50);})
+        .y1(function(d){return yScale(58);})
+
+    svg.append("g")
+        .attr("class","area")
+        .classed("hidden", false)
+        .append("path")
+        .datum(data)
+        .attr("fill", "linen")
+        .style("opacity", 1 )
+        .attr("d", drawArea4);
 
 
   svg.append("g")
@@ -213,15 +265,22 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,
     }
   }
 
+  console.log("data", data)
+  console.log("currPeng", currPeng)
+
  var diff = getDiff(data, currPeng)
 
  ///// does not know what penguin is in diff function
 
 
+
   console.log("diff",diff)
 
+
+
+
   var drawLine = d3.line()
-          .x(function(d,i){return xScale(i)+margins.left;})
+          .x(function(d,i){ console.log("d in drawLine", d); return xScale(i)+margins.left;})
           .y(function(d,i){return yScale(d);})
 
 
@@ -237,19 +296,22 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,
 
 
     svg.append("g")
-     .attr("class","line")
+     .attr("class","line3")
      .attr("id", pengPic.split("-300px.png")[0]+"diff")
      .classed("hidden", false)
      .append("path")
-     .datum(getDiff(data))
+     .datum(getDiff(data, currPeng))
      .attr("d", drawLine)
+     .transition()
+     .duration(1000)
+     .ease(d3.easeLinear)
      .attr("fill", "none")
      .attr("stroke",function(d,i){return "blue"})
      .attr("stroke-width",2)
      .style("opacity",0.8)
 
 
-}*/
+}
 
 var getPictures = function(data)
 {
@@ -333,23 +395,35 @@ var makePenguinButtons = function(data, svg1, svg2, svg3, margins, yScale, xScal
 
        var id = "#"+d[1].split("-300px.png")[0]+"line";
        draw(d[1], data, svg2, margins, yScale, xScale, colors, height, width, heights, widths);
-       //drawChart3(data, d[1], svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
+       drawChart3(data, d[1], svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
       if(count%2==0)
       {
         var lines = d3.selectAll(".line")
+                      .transition()
+                      .duration(1000)
+                      .ease(d3.easeLinear)
                        .style("opacity",0)
 
 
          d3.select(id)
+         .transition()
+         .duration(1000)
+         .ease(d3.easeLinear)
             .style("opacity",1)
 
         d3.select("#classAvg")
+        .transition()
+        .duration(1000)
+        .ease(d3.easeLinear)
         .style("opacity",1)
 
 
       }
       else {
         var lines = d3.selectAll(".line")
+                      .transition()
+                      .duration(1000)
+                      .ease(d3.easeLinear)
                        .style("opacity",1)
       }
 
@@ -551,7 +625,7 @@ var drawChart2 = function(currPeng, data, svg, currData, margins, yScale, xScale
         .classed("hidden", false)
         .append("path")
         .datum(data)
-        .attr("fill", "coral")
+        .attr("fill", "grey")
         .style("opacity", 1 )
         .attr("d", drawArea3);
 //console.log("currPeng", currPeng)
@@ -559,7 +633,7 @@ var drawChart2 = function(currPeng, data, svg, currData, margins, yScale, xScale
 //console.log("cummData", cummData)
 
     svg.append("g")
-     .attr("class","line")
+     .attr("class","line2")
      .attr("id", currPeng.picture.split("-300px.png")+"line")
      .classed("hidden", false)
      .append("path")
@@ -569,6 +643,7 @@ var drawChart2 = function(currPeng, data, svg, currData, margins, yScale, xScale
      .attr("stroke",function(d,i){return "blue"})
      .attr("stroke-width",2)
      .style("opacity",0.8)
+
 }
 
 
@@ -711,7 +786,7 @@ var drawCircle = function(currPeng, data, svg, currData, margins, yScale, xScale
           .classed("hidden", false)
           .append("path")
           .datum(data)
-          .attr("fill", "coral")
+          .attr("fill", "grey")
           .style("opacity", 1 )
           .attr("d", drawArea3);
   //console.log("currPeng", currPeng)

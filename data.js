@@ -8,7 +8,9 @@ var getPenguin = function(data, index)
 
 var getDiff = function(data, penguin)
 {
-    //console.log("penguin in function", penguin)
+  console.log("data in function", data)
+  console.log("penguin in function", penguin)
+
   var avg = getClassAvg(data)
   console.log("avg", avg)
   var cumm = getCummulative(penguin)
@@ -19,6 +21,8 @@ var getDiff = function(data, penguin)
   {
     diff[i]=cumm[i]-avg[i];
   }
+
+  console.log("diff in function", diff)
 
   return diff;
 }
@@ -55,6 +59,7 @@ The final is worth 30% of the grade*/
 
 var getCummulative = function(penguin)
 {
+  console.log("penguin in cumm function", penguin)
 
   var quizGrades = getGrades(penguin, penguin.quizes);
   var hwGrades = getGrades(penguin, penguin.homework);
