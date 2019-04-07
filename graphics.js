@@ -1,6 +1,6 @@
 var classDataP = d3.json("classData.json");
 
-var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors)
+var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,   height, width, heights, widths)
 {
   var drawLine = d3.line()
           .x(function(d,i){return xScale(i)+margins.left;})
@@ -118,6 +118,7 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors)
      })
      .on("click", function(d){
 
+
        console.log("picture", data[i].picture)
        var currPicture = data[i].picture
        var picID = "#"+currPicture.split("-300px.png")[0];
@@ -125,6 +126,15 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors)
        d3.select(picID)
           .style("transform", "scale(1.4,1.4)")
           .style("transform-origin", "50% 50%");
+
+         var id = "#"+currPicture.split("-300px.png")[0]+"line";
+         draw(currPicture, data, svg2, margins, yScale, xScale, colors, height, width, heights, widths);
+         //drawChart3(data, d[1], svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
+
+
+       drawCircle2(data, currPicture, svg2, margins, yScale, xScale, colors,  height, width, heights, widths)
+       drawCircle2(data, currPicture, svg, margins, yScale, xScale, colors,  height, width, heights, widths)
+      //data, svg, svg2, svg3, margins, yScale, xScale, colors
      })
 
    })
@@ -322,7 +332,7 @@ var makePenguinButtons = function(data, svg1, svg2, svg3, margins, yScale, xScal
      .on("click", function(d,i) {
 
        var id = "#"+d[1].split("-300px.png")[0]+"line";
-       draw(d[1], data, svg2, margins, yScale, xScale, colors);
+       draw(d[1], data, svg2, margins, yScale, xScale, colors, height, width, heights, widths);
        //drawChart3(data, d[1], svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
       if(count%2==0)
       {
@@ -408,6 +418,66 @@ var drawCircle2 = function(data, pengPic, svg, margins, yScale, xScale, colors, 
        });
 
 }
+
+
+var drawCircleGraph2 = function(data, currData, pengPic, svg, margins, yScale, xScale, colors,  height, width, heights, widths)
+{
+  d3.select("#graph2").selectAll("circle").remove();
+
+  var penguins = getPenguins(data);
+  var penguinFound = false;
+  var index = 0;
+  var currPeng = "";
+
+
+  while (penguinFound == false && index<penguins.length)
+  {
+    console.log(pengPic, penguins[index].picture)
+
+    if (penguins[index].picture == pengPic)
+    {
+      penguinFound = true;
+      currPeng = penguins[index];
+      console.log("currPeng1", currPeng)
+    }
+    index++;
+    if (index == penguins.length)
+    {
+      console.log("not found")
+    }
+  }
+
+
+  var div = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+
+  svg.selectAll("circle")
+       .data(currData)
+       .enter()
+       .append("circle")
+       .attr("id", pengPic.split("-300px.png")[0]+"circle")
+       .attr("r", 6)
+       .attr("cx", function(d, i) { return xScale(i)+margins.left; })
+       .attr("cy", function(d) { return yScale(d); })
+       .style("fill","blue")
+       .on("mouseover", function(d, i) {
+           div.transition()
+               .duration(200)
+               .style("opacity", 1);
+           div	.html("Grade: "+Math.round(d)+ "<br/>"  + "Day: "+i)
+               .style("left", (d3.event.pageX) + "px")
+               .style("top", (d3.event.pageY -28) + "px");
+           })
+       .on("mouseout", function(d) {
+           div.transition()
+               .duration(500)
+               .style("opacity", 0);
+       });
+
+}
+
 
 var drawChart2 = function(currPeng, data, svg, currData, margins, yScale, xScale, colors)
 {
@@ -502,7 +572,7 @@ var drawChart2 = function(currPeng, data, svg, currData, margins, yScale, xScale
 }
 
 
-var draw = function(penguinPic, data, svg, margins, yScale, xScale, colors)
+var draw = function(penguinPic, data, svg, margins, yScale, xScale, colors, height, width, heights, widths)
 {
   var penguins = getPenguins(data);
   var penguinFound = false;
@@ -526,7 +596,7 @@ var draw = function(penguinPic, data, svg, margins, yScale, xScale, colors)
     }
   }
   //console.log("not found")
-drawChart2(currPeng, data, svg, getCummulative(currPeng), margins, yScale, xScale, colors)
+drawChart2(currPeng, data, svg, getCummulative(currPeng), margins, yScale, xScale, colors, height, width, heights, widths)
 
   var avgHW = getAverages(getGrades(currPeng, currPeng.homework))
   avgHW.forEach(function(d, i){if(d==-1){avgHW[i]=1;} avgHW[i]=d*100;})
@@ -540,31 +610,38 @@ drawChart2(currPeng, data, svg, getCummulative(currPeng), margins, yScale, xScal
   d3.select("#cummulative")
     .on("click", function(d,i){
       drawChart2(currPeng, data, svg, getCummulative(currPeng), margins, yScale, xScale, colors)
+      drawCircleGraph2(data, getCummulative(currPeng), currPeng.picture, svg, margins, yScale, xScale, colors,  height, width, heights, widths)
     })
 
     d3.select("#homework")
       .on("click", function(d,i){
         drawChart2(currPeng, data, svg, avgHW, margins, yScale, xScale, colors)
+        drawCircleGraph2(data, avgHW, currPeng.picture, svg, margins, yScale, xScale, colors,  height, width, heights, widths)
       })
 
 
       d3.select("#final")
         .on("click", function(d,i){
           drawCircle(currPeng, data, svg, avgFinal, margins, yScale, xScale, colors)
+          drawCircleGraph2(data, avgFinal, currPeng.picture, svg, margins, yScale, xScale, colors,  height, width, heights, widths)
         })
 
     d3.select("#test")
       .on("click", function(d,i){
       drawChart2(currPeng, data, svg, avgTest, margins, yScale, xScale, colors)
+      drawCircleGraph2(data, avgTest, currPeng.picture, svg, margins, yScale, xScale, colors,  height, width, heights, widths)
     })
 
     d3.select("#quiz")
       .on("click", function(d,i){
       drawChart2(currPeng, data, svg, avgQuiz, margins, yScale, xScale, colors)
+      drawCircleGraph2(data, avgQuiz, currPeng.picture, svg, margins, yScale, xScale, colors,  height, width, heights, widths)
     })
 
 
 }
+
+
 
 
 var drawCircle = function(currPeng, data, svg, currData, margins, yScale, xScale, colors)
@@ -743,7 +820,7 @@ classDataP.then(function(data)
   var colors = d3.scaleOrdinal(d3.schemeAccent);
 
   makePenguinButtons(data, classSVG, svg2, svg3, margins, yScale, xScale, colors,  height, width, screen.heights, screen.widths);
-  drawChart(data, classSVG, svg2, svg3, margins, yScale, xScale, colors);
+  drawChart(data, classSVG, svg2, svg3, margins, yScale, xScale, colors,   height, width, screen.heights, screen.widths);
 
 
 },
