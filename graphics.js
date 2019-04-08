@@ -1,5 +1,9 @@
 var classDataP = d3.json("classData.json");
 
+var countLine = 0;
+
+var count = 0;
+
 var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,   height, width, heights, widths)
 {
   var drawLine = d3.line()
@@ -63,7 +67,7 @@ var drawChart = function(data, svg, svg2, svg3, margins, yScale, xScale, colors,
           // var currPicture = data[i].picture
           // var picID = "#"+currPicture.split("-300px.png")[0];
 
-count = 0;
+
   lineData.forEach(function(d,i)
   {
     return svg.append("g")
@@ -79,8 +83,7 @@ count = 0;
      .style("opacity",0.8)
       .attr("id",data[i].picture.split("-300px.png")[0]+"path")
      .on("mouseover", function(d){
-       if (count%2!=0)
-       //console.log("picture", data[i].picture)
+    //console.log("picture", data[i].picture)
        var currPicture = data[i].picture.split("-300px.png")[0]
        var picID = "#"+currPicture;
 
@@ -134,7 +137,7 @@ count = 0;
 
          drawChart3(data, currPicture, svg3, margins, yScale, xScale, colors,  height, width, heights, widths);
 
-         if(count%2==0)
+         if(countLine%2==0)
          {
            var lines = d3.selectAll(".line")
                          .transition()
@@ -348,7 +351,7 @@ var makePenguinButtons = function(data, svg1, svg2, svg3, margins, yScale, xScal
 
   console.log("final grade", finalGrade)
 
- var count = 0;
+
 
   d3.select("body")
      .selectAll("img")
